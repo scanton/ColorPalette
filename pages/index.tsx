@@ -114,7 +114,7 @@ export default function Home() {
         <header className="header">
           <div>
             <p className="eyebrow">Color analysis toolkit</p>
-            <h1>Color Palette Playground</h1>
+            <h1>Color Palette Generator</h1>
             <p className="lede">
               Upload an image, tune the sampling parameters, and generate a readable palette with text
               contrast suggestions.
