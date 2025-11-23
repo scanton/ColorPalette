@@ -4,24 +4,18 @@ import Head from 'next/head';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import PaletteSwatch from '../components/PaletteSwatch';
 import { getColorPaletteFromImageElement, type PaletteColor } from '../lib/getColorPalette';
-
-const DEFAULTS = {
-  paletteSize: 8,
-  maxResolution: 1024,
-  sampleStep: 4,
-  nearDuplicateThreshold: 30
-};
+import { PALETTE_DEFAULTS } from '../lib/paletteConfig';
 
 type SortMode = 'population' | 'populationAsc' | 'hex';
 
 export default function Home() {
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const [palette, setPalette] = useState<PaletteColor[]>([]);
-  const [paletteSize, setPaletteSize] = useState<number>(DEFAULTS.paletteSize);
-  const [maxResolution, setMaxResolution] = useState<number>(DEFAULTS.maxResolution);
-  const [sampleStep, setSampleStep] = useState<number>(DEFAULTS.sampleStep);
+  const [paletteSize, setPaletteSize] = useState<number>(PALETTE_DEFAULTS.paletteSize);
+  const [maxResolution, setMaxResolution] = useState<number>(PALETTE_DEFAULTS.maxResolution);
+  const [sampleStep, setSampleStep] = useState<number>(PALETTE_DEFAULTS.sampleStep);
   const [nearDuplicateThreshold, setNearDuplicateThreshold] = useState<number>(
-    DEFAULTS.nearDuplicateThreshold
+    PALETTE_DEFAULTS.nearDuplicateThreshold
   );
   const [sortMode, setSortMode] = useState<SortMode>('population');
   const [error, setError] = useState<string | null>(null);

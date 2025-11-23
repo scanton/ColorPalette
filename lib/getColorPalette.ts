@@ -3,6 +3,8 @@
  * Based on js/getColorPalette.js (kept as a reference/backup).
  */
 
+import { PALETTE_DEFAULTS } from './paletteConfig';
+
 export interface PaletteColor {
   paletteColor: string; // "#RRGGBB"
   textColor: string; // "#000000" | "#FFFFFF"
@@ -20,10 +22,10 @@ interface RawColor {
 
 export async function getColorPaletteFromId(
   id: string,
-  paletteSize = 8,
-  maxResolution = 1024,
-  sampleStep = 4,
-  nearDuplicateThreshold = 30
+  paletteSize = PALETTE_DEFAULTS.paletteSize,
+  maxResolution = PALETTE_DEFAULTS.maxResolution,
+  sampleStep = PALETTE_DEFAULTS.sampleStep,
+  nearDuplicateThreshold = PALETTE_DEFAULTS.nearDuplicateThreshold
 ): Promise<PaletteColor[]> {
   const element = document.getElementById(id);
   if (!element || element.tagName !== 'IMG') {
@@ -41,10 +43,10 @@ export async function getColorPaletteFromId(
 
 export async function getColorPaletteFromImageElement(
   img: HTMLImageElement,
-  paletteSize = 8,
-  maxResolution = 1024,
-  sampleStep = 4,
-  nearDuplicateThreshold = 30
+  paletteSize = PALETTE_DEFAULTS.paletteSize,
+  maxResolution = PALETTE_DEFAULTS.maxResolution,
+  sampleStep = PALETTE_DEFAULTS.sampleStep,
+  nearDuplicateThreshold = PALETTE_DEFAULTS.nearDuplicateThreshold
 ): Promise<PaletteColor[]> {
   if (!(img instanceof HTMLImageElement)) {
     throw new Error('Provided element is not an HTMLImageElement.');
