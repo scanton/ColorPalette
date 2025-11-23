@@ -33,6 +33,7 @@ Then open http://localhost:3000 in a browser.
 pnpm build
 pnpm start
 ```
+<img width="1842" height="1456" alt="image" src="https://github.com/user-attachments/assets/60b41b7d-6ce3-4249-9199-54a3313400f6" />
 
 ## Usage
 1. Go to the main page.
