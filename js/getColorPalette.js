@@ -25,7 +25,7 @@
  * - maxResolution: max width/height for downscaled image (default 1024).
  * - sampleStep: sample every Nth pixel for speed (default 2).
  * - nearDuplicateThreshold: max distance in RGB space for colors to be merged
- *   into the same cluster (default 60; set to 0 or negative to disable merging).
+ *   into the same cluster (default 50; set to 0 or negative to disable merging).
  */
 
 /**
@@ -35,7 +35,7 @@
  * @param {number} [paletteSize=10] - Number of colors to return.
  * @param {number} [maxResolution=1024] - Max width/height of resized image.
  * @param {number} [sampleStep=2] - Pixel sampling step (larger = faster, smaller = more accurate).
- * @param {number} [nearDuplicateThreshold=60] - RGB distance threshold for merging near-duplicate colors.
+ * @param {number} [nearDuplicateThreshold=50] - RGB distance threshold for merging near-duplicate colors.
  * @returns {Promise<Array<{ paletteColor: string, textColor: string, population: number, percentage: number }>>}
  */
 async function getColorPaletteFromId(
@@ -43,7 +43,7 @@ async function getColorPaletteFromId(
   paletteSize = 10,
   maxResolution = 1024,
   sampleStep = 2,
-  nearDuplicateThreshold = 60
+  nearDuplicateThreshold = 50
 ) {
   const img = document.getElementById(id);
   if (!img || img.tagName !== 'IMG') {
@@ -65,7 +65,7 @@ async function getColorPaletteFromId(
  * @param {number} [paletteSize=8]
  * @param {number} [maxResolution=1024]
  * @param {number} [sampleStep=4] - Pixel sampling step. e.g. 4 = sample every 4th pixel.
- * @param {number} [nearDuplicateThreshold=30] - RGB distance threshold for merging near-duplicate colors.
+ * @param {number} [nearDuplicateThreshold=50] - RGB distance threshold for merging near-duplicate colors.
  * @returns {Promise<Array<{ paletteColor: string, textColor: string, population: number, percentage: number }>>}
  */
 async function getColorPaletteFromImageElement(
@@ -73,7 +73,7 @@ async function getColorPaletteFromImageElement(
   paletteSize = 10,
   maxResolution = 1024,
   sampleStep = 2,
-  nearDuplicateThreshold = 60
+  nearDuplicateThreshold = 50
 ) {
   if (!(img instanceof HTMLImageElement)) {
     throw new Error('Provided element is not an HTMLImageElement.');

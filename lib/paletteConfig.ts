@@ -9,5 +9,5 @@ export const PALETTE_DEFAULTS: PaletteConfig = {
   paletteSize: 10,
   maxResolution: 1024,
   sampleStep: 2,
-  nearDuplicateThreshold: 60
+  nearDuplicateThreshold: 50
 };
