@@ -126,7 +126,7 @@ Name | State key | Default | Slider Range
 Palette Size | paletteSize | 8 | 1–32 | 
 Max Resolution | maxResolution | 1024 | 256–2048 (step ~64)
 Sample Step | sampleStep | 4 | 1–16
-Near Duplicate Threshold | nearDuplicateThreshold | 20 | 0–100
+Near Duplicate Threshold | nearDuplicateThreshold | 30 | 0–100
 
 	•	The slider and numeric input for each setting must stay in sync.
 	•	Use React state with proper TypeScript types (e.g. number).

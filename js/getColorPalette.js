@@ -35,7 +35,7 @@
  * @param {number} [paletteSize=8] - Number of colors to return.
  * @param {number} [maxResolution=1024] - Max width/height of resized image.
  * @param {number} [sampleStep=4] - Pixel sampling step (larger = faster, smaller = more accurate).
- * @param {number} [nearDuplicateThreshold=20] - RGB distance threshold for merging near-duplicate colors.
+ * @param {number} [nearDuplicateThreshold=30] - RGB distance threshold for merging near-duplicate colors.
  * @returns {Promise<Array<{ paletteColor: string, textColor: string, population: number, percentage: number }>>}
  */
 async function getColorPaletteFromId(
@@ -65,7 +65,7 @@ async function getColorPaletteFromId(
  * @param {number} [paletteSize=8]
  * @param {number} [maxResolution=1024]
  * @param {number} [sampleStep=4] - Pixel sampling step. e.g. 4 = sample every 4th pixel.
- * @param {number} [nearDuplicateThreshold=20] - RGB distance threshold for merging near-duplicate colors.
+ * @param {number} [nearDuplicateThreshold=30] - RGB distance threshold for merging near-duplicate colors.
  * @returns {Promise<Array<{ paletteColor: string, textColor: string, population: number, percentage: number }>>}
  */
 async function getColorPaletteFromImageElement(

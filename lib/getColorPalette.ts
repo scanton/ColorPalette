@@ -23,7 +23,7 @@ export async function getColorPaletteFromId(
   paletteSize = 8,
   maxResolution = 1024,
   sampleStep = 4,
-  nearDuplicateThreshold = 20
+  nearDuplicateThreshold = 30
 ): Promise<PaletteColor[]> {
   const element = document.getElementById(id);
   if (!element || element.tagName !== 'IMG') {
@@ -44,7 +44,7 @@ export async function getColorPaletteFromImageElement(
   paletteSize = 8,
   maxResolution = 1024,
   sampleStep = 4,
-  nearDuplicateThreshold = 20
+  nearDuplicateThreshold = 30
 ): Promise<PaletteColor[]> {
   if (!(img instanceof HTMLImageElement)) {
     throw new Error('Provided element is not an HTMLImageElement.');

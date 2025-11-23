@@ -9,7 +9,7 @@ const DEFAULTS = {
   paletteSize: 8,
   maxResolution: 1024,
   sampleStep: 4,
-  nearDuplicateThreshold: 20
+  nearDuplicateThreshold: 30
 };
 
 type SortMode = 'population' | 'populationAsc' | 'hex';
