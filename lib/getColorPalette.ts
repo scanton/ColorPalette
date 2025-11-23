@@ -10,6 +10,7 @@ export interface PaletteColor {
   textColor: string; // "#000000" | "#FFFFFF"
   population: number;
   percentage: number; // 0–1
+  metrics: ColorMetrics;
 }
 
 interface RawColor {
@@ -18,6 +19,12 @@ interface RawColor {
   b: number;
   population: number;
   percentage?: number;
+}
+
+export interface ColorMetrics {
+  hue: number; // 0–360
+  saturation: number; // 0–100 (%)
+  luminance: number; // 0–1
 }
 
 export async function getColorPaletteFromId(
@@ -135,11 +142,13 @@ export async function getColorPaletteFromImageElement(
   return limitedColors.map(c => {
     const hex = rgbToHex(c.r, c.g, c.b);
     const textColor = bestTextColor(c.r, c.g, c.b);
+    const metrics = getColorMetrics(c.r, c.g, c.b);
     return {
       paletteColor: hex,
       textColor,
       population: c.population,
-      percentage: c.percentage ?? 0
+      percentage: c.percentage ?? 0,
+      metrics
     };
   });
 }
@@ -202,6 +211,45 @@ function srgbToLuminance(r: number, g: number, b: number): number {
   const B = channelToLinear(b);
 
   return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+}
+
+function rgbToHsl(r: number, g: number, b: number) {
+  const rN = r / 255;
+  const gN = g / 255;
+  const bN = b / 255;
+
+  const max = Math.max(rN, gN, bN);
+  const min = Math.min(rN, gN, bN);
+  const delta = max - min;
+
+  let hue = 0;
+  if (delta !== 0) {
+    if (max === rN) {
+      hue = ((gN - bN) / delta) % 6;
+    } else if (max === gN) {
+      hue = (bN - rN) / delta + 2;
+    } else {
+      hue = (rN - gN) / delta + 4;
+    }
+  }
+  hue *= 60;
+  if (hue < 0) hue += 360;
+
+  const luminance = (max + min) / 2;
+  const saturation =
+    delta === 0 ? 0 : delta / (1 - Math.abs(2 * luminance - 1));
+
+  return { hue, saturation };
+}
+
+function getColorMetrics(r: number, g: number, b: number): ColorMetrics {
+  const { hue, saturation } = rgbToHsl(r, g, b);
+  const luminance = srgbToLuminance(r, g, b);
+  return {
+    hue,
+    saturation: saturation * 100,
+    luminance
+  };
 }
 
 function contrastRatio(L1: number, L2: number): number {

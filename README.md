@@ -46,8 +46,8 @@ pnpm start
 5. Review the resulting swatches:
    - Background represents the palette color.
    - Text uses the recommended contrast color (black or white).
-   - Population and percentage indicate frequency.
-6. Use the “Sort by” control to reorder the palette by population (asc/desc) or hex.
+   - Population, percentage, hue, saturation, and luminance show color details and frequency.
+6. Use the “Sort by” controls to reorder the palette by population, percentage, hue, saturation, luminance, or hex and toggle asc/desc.
 
 ## Notes
 - Image processing happens completely client-side.

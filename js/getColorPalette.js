@@ -15,35 +15,36 @@
  *     paletteColor: "#RRGGBB",
  *     textColor: "#000000" | "#FFFFFF",
  *     population: number,   // number of sampled pixels in this color cluster
- *     percentage: number    // fraction of total sampled pixels, between 0 and 1
+ *     percentage: number,   // fraction of total sampled pixels, between 0 and 1
+ *     metrics: { hue: number, saturation: number, luminance: number }
  *   },
  *   ...
  * ]
  *
  * Parameters:
- * - paletteSize: number of colors to return (default 10).
+ * - paletteSize: number of colors to return (default 8).
  * - maxResolution: max width/height for downscaled image (default 1024).
- * - sampleStep: sample every Nth pixel for speed (default 2).
+ * - sampleStep: sample every Nth pixel for speed (default 4).
  * - nearDuplicateThreshold: max distance in RGB space for colors to be merged
- *   into the same cluster (default 50; set to 0 or negative to disable merging).
+ *   into the same cluster (default 30; set to 0 or negative to disable merging).
  */
 
 /**
  * Main convenience function: find palette from an <img> element by ID.
  *
  * @param {string} id - CSS id of the <img> element.
- * @param {number} [paletteSize=10] - Number of colors to return.
+ * @param {number} [paletteSize=8] - Number of colors to return.
  * @param {number} [maxResolution=1024] - Max width/height of resized image.
- * @param {number} [sampleStep=2] - Pixel sampling step (larger = faster, smaller = more accurate).
- * @param {number} [nearDuplicateThreshold=50] - RGB distance threshold for merging near-duplicate colors.
+ * @param {number} [sampleStep=4] - Pixel sampling step (larger = faster, smaller = more accurate).
+ * @param {number} [nearDuplicateThreshold=30] - RGB distance threshold for merging near-duplicate colors.
  * @returns {Promise<Array<{ paletteColor: string, textColor: string, population: number, percentage: number }>>}
  */
 async function getColorPaletteFromId(
   id,
-  paletteSize = 10,
+  paletteSize = 8,
   maxResolution = 1024,
-  sampleStep = 2,
-  nearDuplicateThreshold = 50
+  sampleStep = 4,
+  nearDuplicateThreshold = 30
 ) {
   const img = document.getElementById(id);
   if (!img || img.tagName !== 'IMG') {
@@ -65,15 +66,15 @@ async function getColorPaletteFromId(
  * @param {number} [paletteSize=8]
  * @param {number} [maxResolution=1024]
  * @param {number} [sampleStep=4] - Pixel sampling step. e.g. 4 = sample every 4th pixel.
- * @param {number} [nearDuplicateThreshold=50] - RGB distance threshold for merging near-duplicate colors.
+ * @param {number} [nearDuplicateThreshold=30] - RGB distance threshold for merging near-duplicate colors.
  * @returns {Promise<Array<{ paletteColor: string, textColor: string, population: number, percentage: number }>>}
  */
 async function getColorPaletteFromImageElement(
   img,
-  paletteSize = 10,
+  paletteSize = 8,
   maxResolution = 1024,
-  sampleStep = 2,
-  nearDuplicateThreshold = 50
+  sampleStep = 4,
+  nearDuplicateThreshold = 30
 ) {
   if (!(img instanceof HTMLImageElement)) {
     throw new Error('Provided element is not an HTMLImageElement.');
@@ -196,11 +197,13 @@ async function getColorPaletteFromImageElement(
   const palette = limitedColors.map(c => {
     const hex = rgbToHex(c.r, c.g, c.b);
     const textColor = bestTextColor(c.r, c.g, c.b); // "#000000" or "#FFFFFF"
+    const metrics = getColorMetrics(c.r, c.g, c.b);
     return {
       paletteColor: hex,
       textColor,
       population: c.population,
-      percentage: c.percentage
+      percentage: c.percentage,
+      metrics
     };
   });
 
@@ -288,6 +291,44 @@ function bestTextColor(r, g, b) {
   const contrastWithBlack = contrastRatio(bgL, blackL);
 
   return contrastWithWhite >= contrastWithBlack ? '#FFFFFF' : '#000000';
+}
+
+// RGB to HSL (hue in 0–360, saturation 0–1, luminance 0–1)
+function rgbToHsl(r, g, b) {
+  const rN = r / 255;
+  const gN = g / 255;
+  const bN = b / 255;
+
+  const max = Math.max(rN, gN, bN);
+  const min = Math.min(rN, gN, bN);
+  const delta = max - min;
+
+  let hue = 0;
+  if (delta !== 0) {
+    if (max === rN) {
+      hue = ((gN - bN) / delta) % 6;
+    } else if (max === gN) {
+      hue = (bN - rN) / delta + 2;
+    } else {
+      hue = (rN - gN) / delta + 4;
+    }
+  }
+  hue *= 60;
+  if (hue < 0) hue += 360;
+
+  const luminance = (max + min) / 2;
+  const saturation = delta === 0 ? 0 : delta / (1 - Math.abs(2 * luminance - 1));
+
+  return { hue, saturation, luminance };
+}
+
+function getColorMetrics(r, g, b) {
+  const { hue, saturation, luminance } = rgbToHsl(r, g, b);
+  return {
+    hue,
+    saturation: saturation * 100,
+    luminance
+  };
 }
 
 // Euclidean distance between two colors in RGB space

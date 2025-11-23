@@ -6,7 +6,8 @@ import PaletteSwatch from '../components/PaletteSwatch';
 import { getColorPaletteFromImageElement, type PaletteColor } from '../lib/getColorPalette';
 import { PALETTE_DEFAULTS } from '../lib/paletteConfig';
 
-type SortMode = 'population' | 'populationAsc' | 'hex';
+type SortField = 'population' | 'percentage' | 'hex' | 'hue' | 'saturation' | 'luminance';
+type SortDirection = 'asc' | 'desc';
 
 export default function Home() {
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
@@ -17,7 +18,8 @@ export default function Home() {
   const [nearDuplicateThreshold, setNearDuplicateThreshold] = useState<number>(
     PALETTE_DEFAULTS.nearDuplicateThreshold
   );
-  const [sortMode, setSortMode] = useState<SortMode>('population');
+  const [sortField, setSortField] = useState<SortField>('population');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -77,17 +79,33 @@ export default function Home() {
 
   const sortedPalette = useMemo(() => {
     const paletteCopy = [...palette];
-    switch (sortMode) {
-      case 'population':
-        return paletteCopy.sort((a, b) => b.population - a.population);
-      case 'populationAsc':
-        return paletteCopy.sort((a, b) => a.population - b.population);
-      case 'hex':
-        return paletteCopy.sort((a, b) => a.paletteColor.localeCompare(b.paletteColor));
-      default:
-        return paletteCopy;
-    }
-  }, [palette, sortMode]);
+    return paletteCopy.sort((a, b) => {
+      let delta = 0;
+      switch (sortField) {
+        case 'population':
+          delta = a.population - b.population;
+          break;
+        case 'percentage':
+          delta = a.percentage - b.percentage;
+          break;
+        case 'hue':
+          delta = a.metrics.hue - b.metrics.hue;
+          break;
+        case 'saturation':
+          delta = a.metrics.saturation - b.metrics.saturation;
+          break;
+        case 'luminance':
+          delta = a.metrics.luminance - b.metrics.luminance;
+          break;
+        case 'hex':
+          delta = a.paletteColor.localeCompare(b.paletteColor);
+          break;
+        default:
+          delta = 0;
+      }
+      return sortDirection === 'asc' ? delta : -delta;
+    });
+  }, [palette, sortField, sortDirection]);
 
   useEffect(() => {
     if (!imageDataUrl) return;
@@ -196,16 +214,29 @@ export default function Home() {
             <section className="card actions-card">
               <div className="actions">
                 <div className="sorter">
-                  <label htmlFor="sortMode">Sort by</label>
+                  <label htmlFor="sortField">Sort by</label>
                   <select
-                    id="sortMode"
-                    value={sortMode}
-                    onChange={e => setSortMode(e.target.value as SortMode)}
+                    id="sortField"
+                    value={sortField}
+                    onChange={e => setSortField(e.target.value as SortField)}
                   >
-                    <option value="population">Population (desc)</option>
-                    <option value="populationAsc">Population (asc)</option>
-                    <option value="hex">Hex value (asc)</option>
+                    <option value="population">Population</option>
+                    <option value="percentage">Percentage</option>
+                    <option value="hue">Hue</option>
+                    <option value="saturation">Saturation</option>
+                    <option value="luminance">Luminance</option>
+                    <option value="hex">Hex value</option>
                   </select>
+                </div>
+                <div className="sorter">
+                  <label>Direction</label>
+                  <button
+                    type="button"
+                    className="button button-secondary"
+                    onClick={() => setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))}
+                  >
+                    {sortDirection === 'asc' ? 'Asc' : 'Desc'}
+                  </button>
                 </div>
                 <button className="button" onClick={handleGeneratePalette} disabled={isGenerating}>
                   {isGenerating ? 'Generating…' : 'Generate Palette'}
