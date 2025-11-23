@@ -2,8 +2,11 @@
 ColorPalette is a Next.js + TypeScript playground for extracting dominant color palettes from images using a custom color analysis utility.
 
 ## Prerequisites
-- Node.js 18+
-- pnpm installed globally
+- Node.js 18+. If you don’t have it, download from https://nodejs.org or use a version manager like `nvm`.
+- pnpm installed globally. If you don’t have it, install with:
+  ```bash
+  npm install -g pnpm
+  ```
 
 ## Get the code (GitHub basics)
 If you are new to GitHub, here is the easiest way to get the project locally:
