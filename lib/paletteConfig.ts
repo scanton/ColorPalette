@@ -6,8 +6,8 @@ export interface PaletteConfig {
 }
 
 export const PALETTE_DEFAULTS: PaletteConfig = {
-  paletteSize: 8,
+  paletteSize: 10,
   maxResolution: 1024,
-  sampleStep: 4,
-  nearDuplicateThreshold: 30
+  sampleStep: 2,
+  nearDuplicateThreshold: 60
 };
